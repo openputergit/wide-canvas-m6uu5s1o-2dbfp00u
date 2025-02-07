@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Attendance Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f0f9ff;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="min-h-screen">
+        <!-- Header -->
+        <header class="bg-sky-600 text-white shadow-lg">
+            <div class="container mx-auto px-4 py-6">
+                <h1 class="text-2xl md:text-3xl font-bold flex items-center">
+                    <i class="bi bi-mortarboard-fill mr-2"></i>
+                    Student Attendance Manager
+                </h1>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="container mx-auto px-4 py-8">
+            <!-- Navigation Tabs -->
+            <div class="flex flex-wrap gap-2 mb-6">
+                <button onclick="showTab('subjects')" class="tab-btn bg-sky-500 hover:bg-sky-600 text-white px-4 py-2 rounded-lg transition">
+                    <i class="bi bi-book mr-2"></i>Subjects
+                </button>
+                <button onclick="showTab('attendance')" class="tab-btn bg-sky-500 hover:bg-sky-600 text-white px-4 py-2 rounded-lg transition">
+                    <i class="bi bi-calendar-check mr-2"></i>Attendance
+                </button>
+                <button onclick="showTab('timetable')" class="tab-btn bg-sky-500 hover:bg-sky-600 text-white px-4 py-2 rounded-lg transition">
+                    <i class="bi bi-clock mr-2"></i>Timetable
+                </button>
+            </div>
+
+            <!-- Subjects Tab -->
+            <div id="subjects" class="tab-content active">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition">
+                        <h3 class="text-xl font-semibold mb-4 text-sky-700">Mathematics</h3>
+                        <p class="text-gray-600">Professor: Dr. Smith</p>
+                        <p class="text-gray-600">Total Classes: 45</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition">
+                        <h3 class="text-xl font-semibold mb-4 text-sky-700">Physics</h3>
+                        <p class="text-gray-600">Professor: Dr. Johnson</p>
+                        <p class="text-gray-600">Total Classes: 40</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition">
+                        <h3 class="text-xl font-semibold mb-4 text-sky-700">Chemistry</h3>
+                        <p class="text-gray-600">Professor: Dr. Williams</p>
+                        <p class="text-gray-600">Total Classes: 42</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Attendance Tab -->
+            <div id="attendance" class="tab-content">
+                <div class="bg-white rounded-xl shadow-md p-6">
+                    <div class="mb-4">
+                        <select id="subjectSelect" class="w-full md:w-64 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500">
+                            <option value="">Select Subject</option>
+                            <option value="mathematics">Mathematics</option>
+                            <option value="physics">Physics</option>
+                            <option value="chemistry">Chemistry</option>
+                        </select>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full">
+                            <thead>
+                                <tr class="bg-sky-50">
+                                    <th class="px-4 py-2 text-left">Student Name</th>
+                                    <th class="px-4 py-2 text-left">Status</th>
+                                    <th class="px-4 py-2 text-left">Date</th>
+                                </tr>
+                            </thead>
+                            <tbody id="attendanceList">
+                                <!-- Attendance records will be inserted here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Timetable Tab -->
+            <div id="timetable" class="tab-content">
+                <div class="bg-white rounded-xl shadow-md p-6 overflow-x-auto">
+                    <table class="min-w-full">
+                        <thead>
+                            <tr class="bg-sky-50">
+                                <th class="px-4 py-2">Time</th>
+                                <th class="px-4 py-2">Monday</th>
+                                <th class="px-4 py-2">Tuesday</th>
+                                <th class="px-4 py-2">Wednesday</th>
+                                <th class="px-4 py-2">Thursday</th>
+                                <th class="px-4 py-2">Friday</th>
+                            </tr>
+                        </thead>
+                        <tbody id="timetableBody">
+                            <!-- Timetable will be inserted here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tab Switching Logic
+        function showTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.getElementById(tabId).classList.add('active');
+        }
+
+        // Sample Student Data
+        const students = [
+            { id: 1, name: "John Doe" },
+            { id: 2, name: "Jane Smith" },
+            { id: 3, name: "Mike Johnson" },
+            { id: 4, name: "Sarah Williams" },
+            { id: 5, name: "Tom Brown" }
+        ];
+
+        // Generate Attendance Records
+        function generateAttendanceRecords() {
+            const attendanceList = document.getElementById('attendanceList');
+            attendanceList.innerHTML = '';
+
+            students.forEach(student => {
+                const row = document.createElement('tr');
+                row.className = 'border-b';
+                row.innerHTML = `
+                    <td class="px-4 py-2">${student.name}</td>
+                    <td class="px-4 py-2">
+                        <select class="attendance-select p-1 rounded border" onchange="updateAttendance(${student.id}, this.value)">
+                            <option value="present">Present</option>
+                            <option value="absent">Absent</option>
+                        </select>
+                    </td>
+                    <td class="px-4 py-2">${new Date().toLocaleDateString()}</td>
+                `;
+                attendanceList.appendChild(row);
+            });
+        }
+
+        // Update Attendance
+        function updateAttendance(studentId, status) {
+            console.log(`Student ${studentId} marked as ${status}`);
+            // Here you would typically update your backend
+        }
+
+        // Generate Timetable
+        function generateTimetable() {
+            const timetableBody = document.getElementById('timetableBody');
+            const timeSlots = ['9:00 AM', '10:00 AM', '11:00 AM', '12:00 PM', '2:00 PM', '3:00 PM'];
+            const subjects = ['Mathematics', 'Physics', 'Chemistry', 'Break', 'Physics Lab', 'Mathematics'];
+
+            timeSlots.forEach((time, index) => {
+                const row = document.createElement('tr');
+                row.className = 'border-b';
+                row.innerHTML = `
+                    <td class="px-4 py-2 font-medium">${time}</td>
+                    <td class="px-4 py-2">${subjects[index % subjects.length]}</td>
+                    <td class="px-4 py-2">${subjects[(index + 1) % subjects.length]}</td>
+                    <td class="px-4 py-2">${subjects[(index + 2) % subjects.length]}</td>
+                    <td class="px-4 py-2">${subjects[(index + 3) % subjects.length]}</td>
+                    <td class="px-4 py-2">${subjects[(index + 4) % subjects.length]}</td>
+                `;
+                timetableBody.appendChild(row);
+            });
+        }
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', () => {
+            generateAttendanceRecords();
+            generateTimetable();
+
+            // Subject select change handler
+            document.getElementById('subjectSelect').addEventListener('change', (e) => {
+                if (e.target.value) {
+                    generateAttendanceRecords(); // Regenerate attendance list for selected subject
+                }
+            });
+        });
+    </script>
+<script>document.body.addEventListener('wheel', e => { if (!e.ctrlKey) return; e.preventDefault(); return }, { passive: false })</script>
+	</body>
+</html>
